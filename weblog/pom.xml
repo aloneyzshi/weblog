@@ -22,7 +22,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.compile.ver>1.7</project.compile.ver>
+		<project.compile.ver>1.8</project.compile.ver>
 		<provided.scope>provided</provided.scope>
 		<storm.version>1.0.3</storm.version>
 	</properties>

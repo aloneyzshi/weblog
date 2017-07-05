@@ -30,7 +30,7 @@ public class ReadLogsSpout implements IRichSpout {
 		this.collector = collector;
 
 	//	String file = "D://haproxy_overwatch_10_160_81_13.log-20170514-1494714303";
-		String file = "D://1.txt";
+		String file = "D://2.txt";
 		try {
 
 			this.fis = new FileInputStream(file);

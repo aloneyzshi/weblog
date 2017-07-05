@@ -38,10 +38,10 @@ public class kafkastormtopology {
 		 */
 		String zks = "10.82.57.12:2182";
 		String topic = "storm-data-topic";
-		String zkPath = "/kafka/brokers/topics";
+	//	String zkPath = "/kafka/brokers/topics";
 		String id = "storm-spout";
 
-		BrokerHosts brokerHosts = new ZkHosts(zks, zkPath);
+		BrokerHosts brokerHosts = new ZkHosts(zks);
 		SpoutConfig spoutConf = new SpoutConfig(brokerHosts, topic, "/" + topic, id);
 		spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
 		spoutConf.zkServers = Arrays.asList(new String[] { zks });

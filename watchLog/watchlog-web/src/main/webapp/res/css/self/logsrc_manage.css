@@ -1,0 +1,42 @@
+
+.table_text_limit{
+	color: black;
+}
+
+.table_text_limit:hover{
+	text-decoration: none;
+	cursor: pointer;
+	color: black;
+}
+
+.margin-right-10{
+	margin-right: 10px;
+}
+
+.log-item-show{
+	text-align: center;
+	color: gray;
+	font-weight: 100;"
+}
+
+.log-item-input{
+	height: 30px;
+	border-radius: 0;
+}
+
+.log-item-regular-input{
+	height: 35px;
+	display: block;
+	padding: 0px;
+	margin: 0px;
+	border: 0;
+	width: 100%;
+	border-radius: 0;
+	line-height: 1;
+}
+
+
+.filter_delete_icon{
+	vertical-align: middle;
+}
+

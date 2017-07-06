@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="watchlog-web:war">
+    <output-path>$PROJECT_DIR$/watchlog-web/target</output-path>
+    <root id="archive" name="watchlog-web.war">
+      <element id="artifact" artifact-name="watchlog-web:war exploded" />
+    </root>
+  </artifact>
+</component>

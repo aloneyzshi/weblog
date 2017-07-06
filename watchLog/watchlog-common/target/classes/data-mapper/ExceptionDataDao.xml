@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.qa.log.meta.dao.ExceptionDataDao">
+    
+	<sql id="allColumn">
+		exception_data_id as exceptionDataId,
+		log_source_id as logSourceId,
+		sample_time as sampleTime,
+		exception_id as exceptionId,
+		exception_count as exceptionCount
+	</sql>
+    
+    <sql id="time_count">
+        sample_time as sampleTime,
+        sum(exception_count) as exceptionCount
+    </sql>
+    
+      <sql id="exception_count">
+        exception_id as exceptionId,
+        sum(exception_count) as exceptionCount
+    </sql>
+    
+    <sql id="unknown_exception_count">
+        e.exception_id as exceptionId,
+        sum(e.exception_count) as exceptionCount
+    </sql>
+    
+    <sql id="record">
+        aaa.sample_time as sampleTime,
+        aaa.exception_id as exceptionIds,
+        aaa.exception_count as exceptionCounts,
+        bbb.total_count as totalCount
+    </sql>
+    
+    <!-- 项目级别的record -->
+    <sql id="pro_record">
+         b.exceptions_ids as exceptionIds,
+         b.exception_count as exceptionCounts,
+         b.total_count as totalCount
+    </sql>
+    
+    <sql id="ab_error_record">
+         e.exception_id as exceptionId, 
+         e.exception_type as exceptionType, 
+         a.count as exceptionCount
+    </sql>
+    
+	<insert id="insert" parameterType="com.netease.qa.log.meta.ExceptionData"
+		useGeneratedKeys="true" keyProperty="exceptionDataId">
+		insert into exception_data(log_source_id, sample_time, exception_id, exception_count) 
+		  values(#{logSourceId}, #{sampleTime}, #{exceptionId},#{exceptionCount})
+	</insert>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from exception_data where exception_data_id=#{exceptionDataId}
+	</delete>
+
+	<select id="findByExceptionDataId" parameterType="java.lang.Integer"
+		resultType="com.netease.qa.log.meta.ExceptionData">
+		select
+		<include refid="allColumn" />
+		from exception_data where exception_data_id=#{exceptionDataId}
+	</select>
+   
+   <!-- 实时分析页面，返回起止时间内汇总数据，只有一条。 -->
+  <select id="findSummaryByLogSourceIdAndTime" resultType="com.netease.qa.log.meta.ExceptionDataRecord">
+         select  
+         <include refid="record" />
+         from 
+                (select b.sample_time sample_time, group_concat(b.exception_id) exception_id, group_concat(b.sub_count) exception_count 
+                     from (
+                        select sample_time,exception_id,sum(exception_count) sub_count 
+                            from exception_data where log_source_id=${param1} 
+                            and sample_time between ${param2} and ${param3} 
+                            group by exception_id  order by sample_time) b 
+                ) aaa,
+            (select sample_time,sum(exception_count) total_count from exception_data  where log_source_id=${param1}
+             and sample_time between ${param2} and ${param3} order by sample_time
+            ) bbb
+        where aaa.sample_time = bbb.sample_time;
+    </select> 
+   
+   
+    <!-- 聚合分析页面，时间维度聚合，返回所有数据 -->
+    <select id="findTimeRecordsByLogSourceIdAndTime" resultType="com.netease.qa.log.meta.ExceptionDataRecord">
+         select  
+         <include refid="record" />
+         from 
+                (select b.sample_time sample_time, group_concat(b.exception_id) exception_id, group_concat(b.sub_count) exception_count 
+                     from (
+                        select sample_time,exception_id,sum(exception_count) sub_count 
+                            from exception_data where log_source_id=${param1} 
+                            and sample_time between ${param2} and ${param3} 
+                            group by sample_time,exception_id) b group by b.sample_time
+                ) aaa,
+            (select sample_time,sum(exception_count) total_count from exception_data  where log_source_id=${param1}
+             and sample_time between ${param2} and ${param3}  
+             group by sample_time ) bbb
+        where aaa.sample_time = bbb.sample_time order by ${param4}  ${param5}  limit ${param6}  offset ${param7}  ;
+    </select>
+    
+    <!-- 项目级别的异常分布，返回所有数据 -->
+    <select id="findRecordsByLogSourceIdAndTime" resultType="com.netease.qa.log.meta.ExceptionDataRecord">
+      select
+         <include refid="pro_record" />
+         from(
+              SELECT a.log_source_id log_source_id,GROUP_CONCAT(a.exception_id) exceptions_ids,GROUP_CONCAT(a.sub_count) exception_count,SUM(a.sub_count) total_count
+                 FROM(
+                          SELECT log_source_id,exception_id,SUM(exception_count) sub_count 
+                                   FROM exception_data WHERE log_source_id=${param1}
+                                           AND sample_time BETWEEN ${param2} AND ${param3}
+                                                 GROUP BY exception_id 
+                     ) a
+                          GROUP BY log_source_id
+              ) b
+    </select>
+    
+    <!-- 返回趋势图的 total_count -->
+        <select id="getTotalCountByLogsourceIdAndTime" resultType="java.lang.Integer">
+              SELECT SUM(a.sub_count) total_count
+                 FROM(
+                          SELECT log_source_id,exception_id,SUM(exception_count) sub_count 
+                                   FROM exception_data WHERE log_source_id=${param1}
+                                           AND sample_time BETWEEN ${param2} AND ${param3}
+                                                 GROUP BY exception_id 
+                     ) a
+                          GROUP BY log_source_id
+    </select>
+    
+     <!-- 聚合分析页面，时间维度聚合，返回总数据量 -->
+    <select id="getTimeRecordsCountByLogSourceIdAndTime" resultType="java.lang.Integer">
+         select count(a.sample_time) from 
+                (select distinct sample_time from exception_data where log_source_id=${param1} 
+                and sample_time between ${param2} and ${param3} 
+                group by log_source_id, sample_time ) a;
+    </select>
+   
+   
+      <!-- 聚合分析页面，异常维度聚合，返回所有数据 -->
+    <select id="findErrorRecordsByLogSourceIdAndTime" resultType="com.netease.qa.log.meta.ExceptionData">
+         select  
+         <include refid="exception_count" />
+         from exception_data where log_source_id=${param1} and sample_time between ${param2} and ${param3}  
+         group by exception_id order by ${param4}  ${param5}  limit ${param6}  offset ${param7} ;
+    </select>
+    
+      <!-- 聚合分析页面，异常维度聚合，返回特定异常类型   只有一条-->
+    <select id="findUnknownTypeByLogSourceIdAndTime" resultType="com.netease.qa.log.meta.ExceptionData">
+         select  
+         <include refid="unknown_exception_count" />
+         from exception_data e, (
+         select exception_id, log_source_id from exception where log_source_id=${param1} and exception_type=#{3}
+         ) a where e.log_source_id=a.log_source_id and e.exception_id=a.exception_id and sample_time between ${param2} and ${param3}  
+         group by e.exception_id ;
+    </select>
+   
+     <!-- 聚合分析页面，异常维度聚合，返回总数据量 -->
+    <select id="getErrorRecordsCountByLogSourceIdAndTime" resultType="java.lang.Integer">
+        select count(a.exception_id) from 
+                (select distinct exception_id from exception_data where log_source_id=${param1} 
+                and sample_time between ${param2} and ${param3}  
+                group by exception_id) a;
+    </select>  
+   
+   
+    <!-- 聚合分析-异常类型详情"更多"页面 -->
+    <select id="findErrorRecordsByLogSourceIdAndExceptionIdAndTime" resultType="com.netease.qa.log.meta.ExceptionData">
+        select
+        <include refid="time_count" /> 
+        from exception_data  where log_source_id=${param1} and exception_id =${param2} 
+        and sample_time between ${param3} and ${param4} 
+        group by sample_time order by ${param5}  ${param6}  limit ${param7}  offset ${param8};
+    </select>
+    
+    <!-- 聚合分析-异常类型详情"更多"页面，返回总数据量 -->
+    <select id="getErrorRecordsCountByLogSourceIdAndExceptionIdAndTime" resultType="java.lang.Integer">
+            select count(a.sample_time) from 
+                (select distinct sample_time from exception_data  where log_source_id=${param1}  and exception_id =${param2}  
+                 and sample_time between ${param3} and ${param4} 
+                 group by sample_time) a;  
+    </select>
+    
+    <!-- AB平台上的，按照机器聚合 -->
+    <!-- 获取日志源异常在起止时间内的异常总数 -->
+    <select id="getLogSourceExceptionTotalCountByTime" resultType="java.lang.Integer">
+    SELECT SUM(exception_count) FROM exception_data 
+         WHERE log_source_id = ${param1} AND sample_time BETWEEN ${param2} AND ${param3};
+    </select>
+    
+    <!-- 获取想起异常类型维度表 -->
+    <select id="findErrorRecordsByLogSourceIdAndTimeByAB" resultType="com.netease.qa.log.meta.ExceptionData">
+    SELECT 
+       <include refid="ab_error_record"/>
+     FROM  (SELECT exception_id, SUM(exception_count) AS COUNT FROM exception_data
+                   WHERE log_source_id = ${param1} AND sample_time BETWEEN ${param2} AND ${param3} GROUP BY exception_id) a, 
+           exception e
+       WHERE a.exception_id = e.exception_id;
+    </select>
+    
+           
+      
+    <select id="findErrorTotalByMachineAndTimeByAB" resultType="java.lang.Integer">
+           select IFNULL( sum(exception_count), 0 ) as total
+           from exception_data 
+           where log_source_id in ( ${param1} ) and sample_time between #{param2} and #{param3}
+    </select>
+          
+      
+    <select id="findErrorRecordsByMachineAndTimeByAB" resultType="com.netease.qa.log.meta.ExceptionData">
+            select e.exception_id as exceptionId, e.exception_type as exceptionType, e.exception_demo as exceptionDemo, a.count as exceptionCount 
+            from 
+                (select  exception_id, sum(exception_count) as count from exception_data where log_source_id in ( ${param1} ) and sample_time between #{param2} and #{param3} group by exception_id) a, 
+                exception e 
+            where a.exception_id = e.exception_id;
+    </select>
+    
+</mapper>

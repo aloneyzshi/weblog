@@ -1,0 +1,178 @@
+.qadev-nav-out-div {
+  background-color:#242424
+}
+
+.qadev-nav-out-div > .qadev-nav-container {
+  margin:0 auto;
+  width:1200px;
+  zoom:1;
+} 
+
+.qadev-nav-out-div > .qadev-nav-container:after {
+  display:block;
+  clear:both;
+  visibility:hidden;
+  height:0;
+  overflow:hidden;
+  content:"."
+}
+  
+.qadev-nav-out-div > .qadev-nav-container li {
+  list-style:none;
+  zoom:1;
+}
+.qadev-nav-out-div>.qadev-nav-container a, .qadev-nav-out-div>.qadev-nav-container a:hover, .qadev-nav-out-div>.qadev-nav-container a:active, .qadev-nav-out-div>.qadev-nav-container a:focus {
+  text-decoration:none;
+  outline:none;
+} 
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-logo {
+  float:left;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar {
+  float: left;
+  margin-left: 90px;
+  height: 60px;
+  line-height: 60px;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  color: #666;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar ul {
+  margin-top:0px;
+  margin-bottom:10px;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar ul li {
+  float:left;
+  margin-left:40px;
+  cursor:pointer;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar li:first-child {
+  margin-left:0;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar li.nav-dropdown-li {
+  position:relative;
+  left: 0;
+  top: 0;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar li.qadev-nav-active a,.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar li:hover a {
+  color:#fff;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar li a {
+  color:#666;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-bar li b {
+  display:inline-block;
+  height:12px;
+  width:12px;
+  margin-top:25px;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-link {
+  position:relative;
+  float:right;
+  height:60px;
+  line-height:60px;
+  font-size:14px;
+  font-family:"Microsoft YaHei";
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-link a:hover {
+  color:#fff;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-link a {
+  color:#666;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-dropdown-container {
+  position:absolute;
+  border:1px solid #eaeaea;
+  top:42px;
+  left:0;
+  padding:10px 0;
+  background-color:#fff;
+  overflow-y: hidden;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-dropdown-container .qadev-nav-sub-nav-bar div {
+  padding:0 17px 0 19px;
+  min-width:56px;
+  line-height:30px;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-dropdown-container .qadev-nav-sub-nav-bar div.qadev-nav-active, .qadev-nav-out-div > .qadev-nav-container .qadev-nav-dropdown-container .qadev-nav-sub-nav-bar div:hover {
+  background-color:#f2f2f2;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-dropdown-container .qadev-nav-sub-nav-bar a, .qadev-nav-out-div > .qadev-nav-container .qadev-nav-dropdown-container .qadev-nav-sub-nav-bar a:hover {
+  color:#666 !important;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-dropdown-container .qadev-nav-sub-nav-bar .qadev-nav-underline {
+  border-bottom:1px solid #eaeaea;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-auth-container {
+  left:auto;
+  right:0;
+  text-align:center;
+  padding:0;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-icn {
+  background-image:url('/res/img/dropdown-icon.png');
+  background-repeat:no-repeat;
+  background-position:-9999px -9999px;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-icn.qadev-nav-pos-icn {
+  background-position:0 0;
+}
+
+.qadev-nav-out-div > .qadev-nav-container .qadev-nav-icn.qadev-nav-pos-icn:hover {
+  background-position:0 -40px;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-link .qadev-nav-user-icn {
+  position:relative;
+  top:1px;
+  right:3px;
+  display:inline-block;
+  width:12px;
+  height:12px;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-link a:hover .qadev-nav-icn.qadev-nav-user-icn {
+  background-position: 0 -102px;
+}
+
+.qadev-nav-hidden {
+  height: 0px;
+  display: none;
+  z-index: 998;
+}
+
+.qadev-nav-display {
+  display: none;
+  z-index: 998;
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-link .qadev-nav-user-icon {
+  margin-right:5px;
+  font-size:12px
+}
+
+.qadev-nav-out-div > .qadev-nav-container > .qadev-nav-link .qadev-nav-icn.qadev-nav-user-icn {
+  background-position:0 -70px;
+}

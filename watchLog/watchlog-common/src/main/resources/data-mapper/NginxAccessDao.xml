@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.qa.log.meta.dao.NginxAccessDao">
+
+	<sql id="allColumn">
+		nid as nid,
+		log_source_id as logSourceId,
+		url as url,
+		start_time as startTime,
+		total_count as totalCount,
+		request_time_total as requestTimeTotal,
+		request_time_max as requestTimeMax,
+		upstream_response_time_total as upstreamResponseTimeTotal,
+		upstream_response_time_max as upstreamResponseTimeMax,
+		ok_count as okCount,
+		error4_count as error4Count,
+		error5_count as error5Count,
+		total_byte as byteTotal,
+		request_time_90 as requestTime90,
+		request_time_99 as requestTime99,
+		upstream_response_time_90 as upstreamResponseTime90,
+		upstream_response_time_99 as upstreamResponseTime99
+	</sql>
+	
+	<sql id="sumColumn">
+		url as url,
+		sum(total_count) as totalCount,
+		sum(ok_count) as okCount,
+		sum(error4_count) as error4Count,
+		sum(error5_count) as error5Count,
+		sum(total_byte) as byteTotal,
+		sum(request_time_total) as requestTimeTotal,
+		max(request_time_max) as requestTimeMax
+	</sql>
+	
+	<sql id="SumDataColumn">
+		log_source_id as logSourceId,
+		url as url,
+		AVG(start_time) as startTime,
+		SUM(total_count) as totalCount,
+		SUM(ok_count) as okCount,
+		SUM(request_time_total) as requestTimeTotal,
+		MAX(request_time_max) as requestTimeMax
+	</sql>
+
+	<insert id="insert" parameterType="com.netease.qa.log.meta.NginxAccess"
+		useGeneratedKeys="true" keyProperty="nid">
+		INSERT INTO
+		nginx_access(log_source_id, url, start_time, total_count,
+		request_time_total, request_time_max, upstream_response_time_total,
+		upstream_response_time_max,
+		ok_count, error4_count, error5_count, total_byte, request_time_90,
+		request_time_99, upstream_response_time_90,upstream_response_time_99)
+		VALUES(#{logSourceId}, #{url}, #{startTime}, #{totalCount},
+		#{requestTimeTotal}, #{requestTimeMax}, #{upstreamResponseTimeTotal},
+		#{upstreamResponseTimeMax}, #{okCount}, #{error4Count},
+		#{error5Count}, #{byteTotal}, #{requestTime90} , #{requestTime99},
+		#{upstreamResponseTime90}, #{upstreamResponseTime99})
+	</insert>
+
+	<select id="getTopUrl" resultType="java.lang.String">
+		SELECT url 
+		  FROM nginx_access WHERE log_source_id=${param1} AND start_time
+		      BETWEEN ${param2} AND ${param3} GROUP BY url ORDER BY SUM(${param5}) DESC
+		           LIMIT 0,${param4}
+	</select>
+	
+	<select id="getTopAllData" resultType="com.netease.qa.log.meta.NginxAccess">
+		SELECT    <include refid="sumColumn" />
+           FROM nginx_access WHERE log_source_id=${param1} AND start_time BETWEEN ${param2} AND ${param3} 
+                   GROUP BY url ORDER BY SUM(${param5}) DESC LIMIT 0,${param4}
+	</select>
+	
+	<select id="getTotalNumByUrl" resultType="java.lang.Integer">
+		SELECT COUNT(nid) FROM nginx_access WHERE log_source_id=${param1} AND url=#{1} AND 
+		          start_time BETWEEN ${param3} AND ${param4}
+	</select>
+	
+	<select id="getValue" resultType="java.lang.Integer">
+		SELECT ${param1} FROM nginx_access WHERE log_source_id=${param2} AND url=#{2} 
+		     AND start_time BETWEEN ${param4} AND ${param5} ORDER BY ${param1} ASC LIMIT 1 OFFSET ${param6}
+		
+	</select>
+	
+	<select id="getRealTimeData" resultType="com.netease.qa.log.meta.NginxAccess">
+		SELECT <include refid="SumDataColumn" />
+		       FROM nginx_access WHERE log_source_id=#{0} AND 
+                     url=#{1} AND start_time &gt;= #{2} AND start_time &lt; #{3}
+	</select>
+	
+	<select id="getAllRealTimeData" resultType="com.netease.qa.log.meta.NginxAccess">
+		SELECT   log_source_id AS logSourceId, AVG(start_time) AS startTime, SUM(total_count) AS totalCount,
+		SUM(ok_count) AS okCount, SUM(request_time_total) AS requestTimeTotal,
+		MAX(request_time_max) AS requestTimeMax FROM nginx_access 
+		   WHERE log_source_id=#{0} AND start_time&gt;= #{1} AND start_time &lt; #{2}
+	</select>
+
+</mapper>
+	

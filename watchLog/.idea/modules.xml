@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/watchlog-common/watchlog-common.iml" filepath="$PROJECT_DIR$/watchlog-common/watchlog-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/watchlog-parent.iml" filepath="$PROJECT_DIR$/watchlog-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/watchlog-storm/watchlog-storm.iml" filepath="$PROJECT_DIR$/watchlog-storm/watchlog-storm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/watchlog-web/watchlog-web.iml" filepath="$PROJECT_DIR$/watchlog-web/watchlog-web.iml" />
+    </modules>
+  </component>
+</project>

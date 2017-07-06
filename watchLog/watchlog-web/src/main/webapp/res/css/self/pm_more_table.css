@@ -1,0 +1,23 @@
+.custom_a{
+	text-decoration: none;
+	cursor: pointer;
+	color: blue;
+}
+
+.custom_a:hover{
+		text-decoration: none;
+}
+
+.pointer_a{
+	cursor: pointer;
+}
+
+.popover-content {
+    word-wrap: break-word;
+}
+
+/*表格文字过长自动换行*/         
+table.wratb {
+    table-layout: fixed;
+    word-wrap: break-word;
+}   

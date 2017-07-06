@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.qa.log.meta.dao.ExceptionDao">
+
+	<sql id="allColumn">
+		exception_id as exceptionId,
+		log_source_id as logSourceId,
+		exception_type_md5 as exceptionTypeMD5,
+		exception_type as exceptionType,
+		exception_demo as exceptionDemo
+	</sql>
+
+
+	<insert id="insert" parameterType="com.netease.qa.log.meta.Exception"
+		useGeneratedKeys="true" keyProperty="exceptionId">
+		insert into exception(log_source_id, exception_type_md5, exception_type, exception_demo) 
+		  values(#{logSourceId}, #{exceptionTypeMD5}, #{exceptionType}, #{exceptionDemo})
+	</insert>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from exception where exception_id=#{exceptionId}
+	</delete>
+
+	<select id="findByExceptionId" parameterType="java.lang.Integer"
+		resultType="com.netease.qa.log.meta.Exception">
+		select
+		<include refid="allColumn" />
+		from exception where exception_id=#{exceptionId}
+	</select>
+
+    
+    <select id="findByTwoKey" resultType="com.netease.qa.log.meta.Exception">
+        select
+        <include refid="allColumn" />
+        from exception where log_source_id=#{0} and exception_type_md5=#{1} limit 1
+    </select>
+</mapper>
+
+
+
+
+

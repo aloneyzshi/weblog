@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.qa.log.meta.dao.ReportDao">
+
+     <sql id="allColumn">
+		report_id as reportId,
+		project_id as projectId,
+		log_source_id as logsourceId,
+		create_time as createTime,
+		start_time as startTime,
+		end_time as endTime,
+		creator_id as creatorId,
+		title as title,
+		comment as comment
+	 </sql>
+	 
+	<insert id="insert" parameterType="com.netease.qa.log.meta.Report"
+		useGeneratedKeys="true" keyProperty="reportId">
+		insert into report(project_id, log_source_id, create_time, start_time, end_time, creator_id, title, comment) 
+		  values(#{projectId}, #{logSourceId}, now(), #{startTime}, #{endTime}, #{creatorId}, #{title}, #{comment})
+	</insert>
+	
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from report where report_id=#{reportId}
+	</delete>
+	
+	<select id="findByReportId" parameterType="java.lang.Integer"
+		resultType="com.netease.qa.log.meta.Report">
+		select
+		<include refid="allColumn" />
+		from report where report_id=#{reportId}
+	</select>
+	
+	<select id="getTotalCountByProjectId" parameterType="java.lang.Integer"
+	    resultType="java.lang.Integer">
+	     select count(report_id) as num from report where project_id=#{projectId} and log_source_id=-1;
+	</select>
+	
+	<select id="getSortedByProjectId" resultType="com.netease.qa.log.meta.Report">
+	   select
+	      <include refid="allColumn" />
+	      from report where project_id=${param1} and log_source_id=-1 order by ${param2} ${param3} limit ${param4} offset ${param5}
+	</select>
+	</mapper>
+	

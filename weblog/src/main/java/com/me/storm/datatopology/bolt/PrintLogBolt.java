@@ -37,7 +37,7 @@ public class PrintLogBolt extends BaseBasicBolt {
 		Matcher matcher = pattern.matcher(line);
 
 		while (matcher.find()) {
-			 
+
 			// matcher.group(0);
 			String ip = matcher.group(1);
 			String serverTimeStr = matcher.group(2);
@@ -55,7 +55,7 @@ public class PrintLogBolt extends BaseBasicBolt {
 
 			// System.out.print(dateStr);
 			for (int i = 0; i <= matcher.groupCount(); i++) {
-				System.out.println(i+" : "+matcher.group(i));
+				System.out.println(i + " : " + matcher.group(i));
 			}
 
 		}
@@ -76,20 +76,6 @@ public class PrintLogBolt extends BaseBasicBolt {
 		 * 
 		 * } catch (ParseException e) { e.printStackTrace(); }
 		 */
-	}
-
-	private boolean regular(String str, String field, String value) {
-		String[] strs = str.split("");
-
-		Pattern p = Pattern.compile(value);
-		Matcher m = p.matcher(strs[Integer.parseInt(field) - 1]);
-		boolean result = m.matches();
-
-		if (result) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	@Override
